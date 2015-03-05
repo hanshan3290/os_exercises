@@ -46,18 +46,17 @@
 ---
 
 搭建好实验环境，请描述碰到的困难和解决的过程。
-- [x]  
+- 无。
 
 > 
 
-熟悉基本的git命令行操作命令，从github上
-的 http://www.github.com/chyyuu/ucore_lab 下载ucore lab实验
-- [x]  
+熟悉基本的git命令行操作命令，从github上的 http://www.github.com/chyyuu/ucore_lab 下载ucore lab实验
+- 已完成。
 
 > 
 
 尝试用qemu+gdb（or ECLIPSE-CDT）调试lab1
-- [x]   
+- 已完成。
 
 > 
 
@@ -103,12 +102,44 @@ SETGATE(intr, 0,1,2,3);
 ```
 请问执行上述指令后， intr的值是多少？
 
-- [x]  
+- 65538
 
 > 
 
 请分析 [list.h](https://github.com/chyyuu/ucore_lab/blob/master/labcodes/lab2/libs/list.h)内容中大致的含义，并能include这个文件，利用其结构和功能编写一个数据结构链表操作的小C程序
-- [x]  
+-程序如下。
+#include <stdio.h>
+#include "list.h"
+
+
+int main(int argc, const char * argv[])
+{
+    list_entry_t HS0,HS1,HS2,HS3;
+    
+    list_init(&HS0);
+    printf("%d %d %d\n",HS0.prev, HS0.next, &HS0);
+    
+    HS0.prev = NULL;
+    HS0.next = &HS1;
+    HS1.prev = &HS0;
+    HS1.next = &HS2;
+    HS2.prev = &HS1;
+    HS2.next = NULL;
+
+    list_add(&HS1, &HS3);
+
+    printf("%d %d %d\n",HS0.prev, HS0.next, &HS0);
+    printf("%d %d %d\n",HS1.prev, HS1.next, &HS1);
+    printf("%d %d %d\n",HS3.prev, HS3.next, &HS3);
+    printf("%d %d %d\n",HS2.prev, HS2.next, &HS2);
+    
+    
+    list_del(&HS3);
+    printf("%d %d %d\n",HS0.prev, HS0.next, &HS0);
+    printf("%d %d %d\n",HS1.prev, HS1.next, &HS1);
+    printf("%d %d %d\n",HS2.prev, HS2.next, &HS2);
+}
+
 
 > 
 
