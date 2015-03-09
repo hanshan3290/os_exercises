@@ -33,10 +33,11 @@ Das U-Boot 是一个主要用于嵌入式系统的开机加载程式，可以支
  
 1. 中断：键盘输入，鼠标输入，硬件的接入，磁盘的读写。   2. 异常：除法计算的除零错，访问无权限的存储空间。
 
+>
  2. Linux的系统调用有哪些？大致的功能分类有哪些？    
  
 Linux系统调用的数目约为200个，大致分类为：进程控制，文件系统控制，系统控制，内存管理，网络管理，socket管理，用户管理，进程间通信等。
- 
+>
  3. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？ 
  
 ucore的系统调用共22个，为exit,fork,wait,exec,yield,kill,getpid,putc,pgdir,gettime,lab6_set_priority,sleep,open,close,read,write,seek,fstat,fsync,getcwd,getdirentry,dup。大致可分为进程管理，内存管理，文件操作等类别。
