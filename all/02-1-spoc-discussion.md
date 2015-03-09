@@ -7,7 +7,7 @@
  
 UEFI比BIOS少了两层引导记录，它在所有平台上提供一致的启动服务。除此之外，UEFI具有可信启动流程，通过签名进行认证，使得其安全性高于BIOS。
 
- 1. 描述PXE的大致启动流程：
+ 2. 描述PXE的大致启动流程：
  
 首先开机并做自我测试，然后与服务器建立连接，下载内核镜像，然后客户端就可以根据下载的文件启动机器。
 
@@ -19,10 +19,17 @@ UEFI比BIOS少了两层引导记录，它在所有平台上提供一致的启动
  1. 了解u-boot的功能。
 
 ## 3.3 中断、异常和系统调用比较
- 1. 举例说明Linux中有哪些中断，哪些异常：   1. 中断：键盘输入，鼠标输入，硬件的接入，磁盘的读写。   2. 异常：除法计算的除零错，访问无权限的存储空间。
- 1. Linux的系统调用有哪些？大致的功能分类有哪些？    Linux系统调用的数目约为200个，大致分类为：进程控制，文件系统控制，系统控制，内存管理，网络管理，socket管理，用户管理，进程间通信等。
+ 1. 举例说明Linux中有哪些中断，哪些异常。
  
- 1. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？    ucore的系统调用共22个，为exit,fork,wait,exec,yield,kill,getpid,putc,pgdir,gettime,lab6_set_priority,sleep,open,close,read,write,seek,fstat,fsync,getcwd,getdirentry,dup。大致可分为进程管理，内存管理，文件操作等类别。
+1. 中断：键盘输入，鼠标输入，硬件的接入，磁盘的读写。   2. 异常：除法计算的除零错，访问无权限的存储空间。
+
+ 2. Linux的系统调用有哪些？大致的功能分类有哪些？    
+ 
+Linux系统调用的数目约为200个，大致分类为：进程控制，文件系统控制，系统控制，内存管理，网络管理，socket管理，用户管理，进程间通信等。
+ 
+ 1. 以ucore lab8的answer为例，uCore的系统调用有哪些？大致的功能分类有哪些？ 
+ 
+ucore的系统调用共22个，为exit,fork,wait,exec,yield,kill,getpid,putc,pgdir,gettime,lab6_set_priority,sleep,open,close,read,write,seek,fstat,fsync,getcwd,getdirentry,dup。大致可分为进程管理，内存管理，文件操作等类别。
 
  
 ## 3.4 linux系统调用分析
@@ -56,6 +63,7 @@ UEFI比BIOS少了两层引导记录，它在所有平台上提供一致的启动
  1. 以ucore lab8的answer为例，尝试修改并运行代码，分析ucore应用的系统调用执行过程。
  
 ## 3.6 请分析函数调用和系统调用的区别
- 1. 请从代码编写和执行过程来说明。
-   1. 说明`int`、`iret`、`call`和`ret`的指令准确功能
- 
+ 1. 请从代码编写和执行过程来说明。并说明`int`、`iret`、`call`和`ret`的指令准确功能
+代码编写时候，函数调用使用call等调用库函数，系统调用使用int等调用系统函数。
+执行时候，系统调用需要调用系统的内核服务，而函数调用不用进入内核。
+int的功能是进入系统调用，iret的功能是系统调用结束后返回。call的功能是调用函数，ret的功能是函数调用完以后返回。
