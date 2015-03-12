@@ -58,7 +58,7 @@ lab1中的cprintf函数最终通过哪些外设完成了对字符串的输出？
 ---
 
 lab1中printfmt函数用到了可变参，请参考写一个小的linux应用程序，完成实现定义和调用一个可变参数的函数。(spoc)
-'''
+```
 #include <stdio.h>
 #include <stdarg.h>
 #define fnAdd(...) _fnAdd(0,__VA_ARGS__)
@@ -76,15 +76,13 @@ int _fnAdd(int start,...)
     va_end(arg_ptr);
     return sum;
 }
-
 int main()
 {
     printf("%d\n",fnAdd(1,2,3,0));
     printf("%d\n",fnAdd(1,2,3,5,0));
     return 0;
 }
-
-'''
+```
 
 
 
