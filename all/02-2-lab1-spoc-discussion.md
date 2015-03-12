@@ -47,7 +47,10 @@ lab1中的cprintf函数最终通过哪些外设完成了对字符串的输出？
   - 除第二点外，进一步说明了并口（2分）
   - 除上述两点外，进一步说明了CGA（3分）
  ```
-- cprintf函数通过lpt_putc函数将字符输出到并口；通过cga_putc函数将字符输出到CGA；通过serial_putc函数将字符输出到串口。
+- cprintf函数用到的3个外设:串口，并口，CGA。函数如下：
+- lpt_putc - copy console output to parallel port
+- cga_putc - print character to console
+- serial_putc - print character to serial port
 
 >  
 
