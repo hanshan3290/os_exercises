@@ -20,7 +20,10 @@ NOTICE
   - 正确描述了四种分配算法的优势和劣势（2分）
   - 除上述两点外，进一步描述了一种更有效的分配算法（3分）
  ```
-- [x]  
+- 最先匹配：简单，在高地址有大块空闲分区。   但是会留下一些外部碎片，并且分配较大块时很慢。
+- 最优匹配：可以避免大块空间被切分，减少外部碎片，简单。    但是外部碎片会比较小，难以被再次利用，释放会比较复杂。
+- 最差匹配：中等大小分配时效果很好，避免过多的小碎片。    但是会产生外部碎片，大的区域会被切分，释放比较复杂。
+- 伙伴系统：简单，外部碎片较少。    但是会产生内部碎片，合并有条件故导致一些连续区域不可合并。
 
 >  
 
@@ -28,16 +31,128 @@ NOTICE
 
 请参考ucore lab2代码，采用`struct pmm_manager` 根据你的`学号 mod 4`的结果值，选择四种（0:最优匹配，1:最差匹配，2:最先匹配，3:buddy systemm）分配算法中的一种或多种，在应用程序层面(可以 用python,ruby,C++，C，LISP等高语言)来实现，给出你的设思路，并给出测试用例。 (spoc)
 
+- 最先匹配维护一个列表，设置flag标记每一块是否被占用。
+- malloc顺序查找，改变标记。
+- free先改变标记，然后合并相邻空闲块。
+- 地址对齐：对于申请的大小，求出大于等于它的最小的4的倍数作为malloc的参数。
+
 ```
-如何表示空闲块？ 如何表示空闲块列表？ 
-[(start0, size0),(start1,size1)...]
-在一次malloc后，如果根据某种顺序查找符合malloc要求的空闲块？如何把一个空闲块改变成另外一个空闲块，或消除这个空闲块？如何更新空闲块列表？
-在一次free后，如何把已使用块转变成空闲块，并按照某种顺序（起始地址，块大小）插入到空闲块列表中？考虑需要合并相邻空闲块，形成更大的空闲块？
-如果考虑地址对齐（比如按照4字节对齐），应该如何设计？
-如果考虑空闲/使用块列表组织中有部分元数据，比如表示链接信息，如何给malloc返回有效可用的空闲块地址而不破坏
-元数据信息？
-伙伴分配器的一个极简实现
-http://coolshell.cn/tag/buddy
+//2012013290 - 最先匹配
+
+#include <iostream>
+using namespace std;
+
+struct page
+{
+    int pageSize;
+    int start,end;
+    bool isfree;
+    page *next;
+};
+
+struct pmm_manager
+{
+    page *pmm;
+    void init();
+    page *alloc_pages(int size);
+    void free_pages(page *p);
+    void show();
+};
+
+void pmm_manager::init()
+{
+    this->pmm=new page;
+    pmm->pageSize=1024;
+    pmm->start=0;
+    pmm->end=1024;
+    pmm->isfree=true;
+    pmm->next=NULL;
+}
+
+page *pmm_manager::alloc_pages(int size)
+{
+    while(size%4!=0)
+    {
+        size++;
+    }
+    page *p=this->pmm, *q;
+    while(p)
+    {
+        if(p->isfree&&p->pageSize>size)
+        {
+            q=new page;
+            q->pageSize=p->pageSize-size;
+            q->start=p->start+size;
+            q->end=p->end;
+            q->isfree=true;
+            q->next=p->next;
+            
+            p->pageSize=size;
+            p->end=q->start;
+            p->next=q;
+            p->isfree=false;
+            break;
+        }
+        else
+        {
+            p=p->next;
+        }
+    }
+    return p;
+}
+
+void pmm_manager::free_pages(page *p)
+{
+    p->isfree=true;
+    page *m=this->pmm, *n;
+    while(m->next)
+    {
+        n=m->next;
+        if(m->isfree && n->isfree)
+        {
+            m->pageSize+=n->pageSize;
+            m->end=n->end;
+            m->next=n->next;
+            free(n);
+        }
+        m=m->next;
+    }
+}
+
+void pmm_manager::show()
+{
+    cout<<"*************************"<<endl;
+    page *p=this->pmm;
+    while(p)
+    {
+        cout<<"|| "<<p->start<<"~"<<p->end<<" ||"<<"---"<<p->isfree<<endl;
+        p=p->next;
+    }
+    cout<<"*************************"<<endl;
+}
+int main()
+{
+    pmm_manager manage;
+    page *n1,*n2,*n3,*n4,*n5,*n6;
+    manage.init();
+    n1=manage.alloc_pages(98);
+    n2=manage.alloc_pages(39);
+    n3=manage.alloc_pages(60);
+    n4=manage.alloc_pages(80);
+    n5=manage.alloc_pages(20);
+    n6=manage.alloc_pages(100);
+    manage.show();
+    
+    manage.free_pages(n2);
+    manage.show();
+    manage.free_pages(n3);
+    manage.show();
+    n2=manage.alloc_pages(80);
+    manage.show();
+    n3=manage.alloc_pages(100);
+    manage.show();
+    return 0;
+}
 ```
 
 --- 
