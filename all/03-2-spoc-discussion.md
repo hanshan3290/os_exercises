@@ -84,7 +84,7 @@ Virtual Address 7268:
 ```
 
 
-Answer:
+- [x]
 ```
 Virtual Address 6c74:
   --> pde index:0x1b  pde contents: (valid 1, pfn 0x20)
