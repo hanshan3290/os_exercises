@@ -83,6 +83,8 @@ Virtual Address 7268:
       --> Translates to Physical Address 0xca8 --> Value: 16
 ```
 
+
+Answer:
 ```
 Virtual Address 6c74:
   --> pde index:0x1b  pde contents: (valid 1, pfn 0x20)
